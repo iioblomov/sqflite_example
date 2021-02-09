@@ -57,6 +57,7 @@ class MyHomePage extends StatelessWidget {
           children: <Widget>[
             Text('The result is displayed at the console.'),
             RaisedButton(
+              child: Text('Insert'),
               onPressed: () async {
                 final second = DateTime.now().second;
                 final id = await SQL.insert(SQL.tabFruits, {
@@ -65,16 +66,13 @@ class MyHomePage extends StatelessWidget {
                 });
                 print('element with "$id" added to table "${SQL.tabFruits}"');
               },
-              child: Text('Insert'),
             ),
             RaisedButton(
+              child: Text('Select '),
               onPressed: () async {
                 final data = await SQL.select(SQL.tabFruits);
-                data.forEach((element) {
-                  print(element);
-                });
+                data.forEach((e) => print(e));
               },
-              child: Text('Select'),
             )
           ],
         ),
