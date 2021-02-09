@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
-import 'package:sqflite/sqflite.dart' as sql;
+import 'package:sqflite/sqflite.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,9 +18,9 @@ class SQL {
   static const colAmount = 'amount';
 
   // Initialize database, create if not exists
-  static Future<sql.Database> init() async {
-    final dbPath = await sql.getDatabasesPath();
-    return await sql.openDatabase(path.join(dbPath, _dbName),
+  static Future<Database> init() async {
+    final dbPath = await getDatabasesPath();
+    return await openDatabase(path.join(dbPath, _dbName),
         onCreate: (db, version) {
       // ''' avoids breaks in text
       return db.execute('''CREATE TABLE $tabFruits (
@@ -36,7 +36,7 @@ class SQL {
     final db = await SQL.init();
     // insert and replace if key exists
     return await db.insert(table, data,
-        conflictAlgorithm: sql.ConflictAlgorithm.replace);
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   // select all table
@@ -55,11 +55,13 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('The result is displayed at the console.'),
+            Text('The result is displayed in the console.'),
             RaisedButton(
               child: Text('Insert'),
               onPressed: () async {
-                final second = DateTime.now().second;
+                final second = DateTime
+                    .now()
+                    .second;
                 final id = await SQL.insert(SQL.tabFruits, {
                   SQL.colName: (second > 30) ? 'apple' : 'orange',
                   SQL.colAmount: second,
