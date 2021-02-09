@@ -1,5 +1,5 @@
-name: provider_example
-description: A simple example of using Provider for state management
+name: sqflite_example
+description: A simple Flutter Sqflite example
 
 publish_to: 'none'
 
