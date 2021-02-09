@@ -68,7 +68,7 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             RaisedButton(
-              child: Text('Select'),
+              child: Text('Select '),
               onPressed: () async {
                 final data = await SQL.select(SQL.tabFruits);
                 data.forEach((e) => print(e));
