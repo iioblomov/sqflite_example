@@ -1,18 +1,14 @@
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
-// Database structure
-// abstraction: table -> class, column -> property
+// Database structure. Abstraction: table -> class, column -> property
 // Usage: SQL.table.self - table name, SQL.table.column - column name
 class TableFruits {
   // table name
   String get self => 'fruits';
-
   // columns
   String get id => 'id';
-
   String get name => 'name';
-
   String get amount => 'amount';
 }
 
@@ -23,7 +19,6 @@ class SQL {
 
   // define tables
   static final fruits = TableFruits();
-
   // define keys: table -> key
   static final keys = {fruits.self: fruits.id};
 
