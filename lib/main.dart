@@ -1,49 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
-import 'package:sqflite/sqflite.dart';
+
+import 'sql.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(home: MyHomePage());
-}
-
-class SQL {
-  static const _dbName = 'fruits.db';
-  static const _dbVersion = 1;
-  static const tabFruits = 'fruits';
-  static const colId = 'id';
-  static const colName = 'name';
-  static const colAmount = 'amount';
-
-  // Initialize database, create if not exists
-  static Future<Database> init() async {
-    final dbPath = await getDatabasesPath();
-    return await openDatabase(path.join(dbPath, _dbName),
-        onCreate: (db, version) {
-      // ''' avoids breaks in text
-      return db.execute('''CREATE TABLE $tabFruits (
-          $colId integer primary key autoincrement, 
-          $colName name text not null, 
-          $colAmount amount integer not null)
-          ''');
-    }, version: _dbVersion);
-  }
-
-  // insert data
-  static Future<int> insert(String table, Map<String, Object> data) async {
-    final db = await SQL.init();
-    // insert and replace if key exists
-    return await db.insert(table, data,
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  // select all table
-  static Future<List<Map<String, dynamic>>> select(String table) async {
-    final db = await SQL.init();
-    return db.query(table);
-  }
 }
 
 class MyHomePage extends StatelessWidget {
@@ -59,23 +22,69 @@ class MyHomePage extends StatelessWidget {
             RaisedButton(
               child: Text('Insert'),
               onPressed: () async {
-                final second = DateTime
-                    .now()
-                    .second;
-                final id = await SQL.insert(SQL.tabFruits, {
-                  SQL.colName: (second > 30) ? 'apple' : 'orange',
-                  SQL.colAmount: second,
+                final second = DateTime.now().second;
+                final id = await SQL.insert(SQL.fruits.self, {
+                  SQL.fruits.name: (second > 30) ? 'apple' : 'orange',
+                  SQL.fruits.amount: second,
                 });
-                print('element with "$id" added to table "${SQL.tabFruits}"');
+                print('Row with "$id" added to table "${SQL.fruits.self}"');
               },
             ),
             RaisedButton(
               child: Text('Select'),
               onPressed: () async {
-                final data = await SQL.select(SQL.tabFruits);
+                final data = await SQL.select(SQL.fruits.self);
                 data.forEach((e) => print(e));
               },
-            )
+            ),
+            RaisedButton(
+              child: Text('Update'),
+              onPressed: () async {
+                final data = await SQL.select(SQL.fruits.self); // select all
+                if (data.length != 0) {
+                  // update first element if data exists
+                  final id = await SQL.update(SQL.fruits.self, {
+                    SQL.fruits.name: 'updated Fruit no.1',
+                    SQL.fruits.amount: '99999999',
+                    SQL.fruits.id: data.first[SQL.fruits.id],
+                  });
+                  print('Row "$id" updated. Press "Select" to see changes');
+                } else {
+                  print('nothing to update');
+                }
+              },
+            ),
+            RaisedButton(
+              child: Text('Delete'),
+              onPressed: () async {
+                final data = await SQL.select(SQL.fruits.self); // select all
+                if (data.length != 0) {
+                  // delete last element if data exists
+                  final num = await SQL.delete(
+                    SQL.fruits.self,
+                    data.last[SQL.fruits.id],
+                  );
+                  print('$num element(s) with ${SQL.fruits.id} deleted');
+                } else {
+                  print("the table is empty");
+                }
+              },
+            ),
+            RaisedButton(
+              child: Text('Clear table'),
+              onPressed: () async {
+                final num = await SQL.deleteAll(SQL.fruits.self);
+                print(
+                    'Table "${SQL.fruits.self}" cleared. $num element(s) deleted');
+              },
+            ),
+            RaisedButton(
+              child: Text('Drop database'),
+              onPressed: () async {
+                await SQL.drop();
+                print('All data removed. Cold restart the app to recreate it');
+              },
+            ),
           ],
         ),
       ),

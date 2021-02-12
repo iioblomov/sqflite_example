@@ -1,8 +1,9 @@
 # Sqflite Example
 
-A simple example of using Flutter Sqflite to store data on the device.
+A simple Flutter Sqflite framework, which helps easily store and update data on the device.
 
 ## Contents
 
-lib/main.dart - one page app  
+lib/main.dart - app UI
+lib/sql.dart - data structure and functions  
 pubscpec.yaml - app manifest 
