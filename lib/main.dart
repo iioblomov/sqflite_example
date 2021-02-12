@@ -24,7 +24,7 @@ class MyHomePage extends StatelessWidget {
               onPressed: () async {
                 final second = DateTime.now().second;
                 final id = await SQL.insert(SQL.fruits.self, {
-                  SQL.fruits.name: (second > 30) ? 'apple' : 'orange',
+                  SQL.fruits.name: (second > 30) ? 'Apple' : 'Orange',
                   SQL.fruits.amount: second,
                 });
                 print('Row with "$id" added to table "${SQL.fruits.self}"');
