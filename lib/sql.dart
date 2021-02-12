@@ -14,7 +14,8 @@ class TableFruits {
 
 // Database control functions
 class SQL {
-  static const _dbName = 'fruits.db';
+  // define database filename and version
+  static const _dbName = 'database.db';
   static const _dbVersion = 1;
 
   // define tables
